@@ -153,4 +153,18 @@ Your task is to create a comprehensive Bruno collection that validates the entir
 4.  **Send the GitHub link** to your instructor via Discord.
 
 ---
+## Bug Found
+### 1. Bug คำนวณราคาผิด 
+* โค้ดมีการหักลบราคา 5 บาทในทุกออเดอร์ (`total_price = (item["price"] * quantity) - 5`)
+* **วิธีที่ Test:** ส่ง Request สั่งต้มยำ 1 ชาม (ราคา 50) และใช้ Script `expect(data.totalPrice).to.equal(50);` ซึ่ง Test แจ้งเตือน Failed เพราะ คืนค่าราคาเป็น 45
+
+### 2. ไม่มีการเช็คจำนวนสต็อกที่สั่ง
+* โค้ดไม่ได้เช็คว่าจำนวนที่สั่ง (quantity) มากกว่าสต็อกที่มีหรือไม่ ทำให้สั่งเกินได้และสต็อกติดลบ
+* **วิธีที่ Test:** ส่ง Request สั่งต้มยำ 999 ชาม และใช้ Script `expect(res.getStatus()).to.not.equal(200);` ซึ่ง Test แจ้งเตือน Failed เพราะ ทำรายการสำเร็จและคืนค่า 200 
+
+### 3. Status Code ผิดพลาดเมื่อหาออเดอร์ไม่เจอ 
+* เมื่อค้นหา Order ID ที่ไม่มีอยู่จริง API คืนค่า Error Message แต่ดันใช้ HTTP Status `200 OK` แทนที่จะเป็น `404 Not Found`
+* **วิธีที่ Test:** ส่ง Request ค้นหาออเดอร์ `ORD-FAKE999` และใช้ Script `expect(res.getStatus()).to.equal(404);` ซึ่ง Test แจ้งเตือน Failed เพราะ API ตอบกลับมาเป็น 200 OK
+
+
 *Good luck. Auntie Som is counting on you!* 🍜🔥

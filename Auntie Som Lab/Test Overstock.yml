@@ -1,0 +1,32 @@
+info:
+  name: Test Overstock
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{baseUrl}}/orders"
+  body:
+    type: json
+    data: |-
+      {
+        "itemId": 1,
+        "quantity": 999
+      }
+  auth:
+    type: bearer
+    token: "{{token}}"
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("สั่งของเกินสต็อกต้อง Error", function() {
+          expect(res.getStatus()).to.not.equal(200);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

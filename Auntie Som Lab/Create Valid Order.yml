@@ -1,0 +1,35 @@
+info:
+  name: Create Valid Order
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{baseUrl}}/orders"
+  body:
+    type: json
+    data: |-
+      {
+        "itemId": 1,
+        "quantity": 1
+      }
+  auth:
+    type: bearer
+    token: "{{token}}"
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        const data = res.getBody();
+
+        test("ต้มยำ 1 ชาม ราคาต้องเท่ากับ 50", function() {
+          // โค้ดหลานเล็กแอบลดราคา 5 บาท Test นี้จะต้อง FAILED ทันทีที่กด Send
+          expect(data.totalPrice).to.equal(50);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
