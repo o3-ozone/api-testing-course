@@ -1,0 +1,34 @@
+info:
+  name: Check Order ID Format
+  type: http
+  seq: 9
+
+http:
+  method: POST
+  url: "{{baseUrl}}/orders"
+  body:
+    type: json
+    data: '{ "itemId": 2, "quantity": 1 }'
+  auth:
+    type: bearer
+    token: "{{token}}"
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("สั่งอาหารสำเร็จต้องได้ Status 200", function() {
+          expect(res.getStatus()).to.equal(200);
+        });
+
+        test("รหัสออเดอร์ (orderId) ต้องขึ้นต้นด้วยคำว่า 'ORD-'", function() {
+          const data = res.getBody();
+          // ใช้คำสั่ง .to.match เพื่อเช็คด้วย Regular Expression ว่าขึ้นต้นด้วย ORD- หรือไม่
+          expect(data.orderId).to.match(/^ORD-/);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

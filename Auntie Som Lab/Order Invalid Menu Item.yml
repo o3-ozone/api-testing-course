@@ -1,0 +1,28 @@
+info:
+  name: Order Invalid Menu Item
+  type: http
+  seq: 7
+
+http:
+  method: POST
+  url: "{{baseUrl}}/orders"
+  body:
+    type: json
+    data: '{ "itemId": 99, "quantity": 1 }'
+  auth:
+    type: bearer
+    token: "{{token}}"
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("สั่งเมนูที่ไม่มีในร้าน ต้องได้ Status 404 Item not found", function() {
+          expect(res.getStatus()).to.equal(404);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
